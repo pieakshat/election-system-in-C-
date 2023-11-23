@@ -22,8 +22,8 @@ struct voter_info // required voter info
     int voterid;
 };
 
-bool isvalidname(const char *name){ 
-    
+bool isvalidname(const char *name)
+{
 }
 
 void get_candidate_info() // function to get the candidate's info from the user
@@ -102,25 +102,46 @@ void get_voter_info()
         exit(1);
     }
 
-    printf("enter voter's name: ");
-    scanf("%s", voter.name);
+    printf("Enter voter's name: ");
+    fgets(voter.name, sizeof(voter.name), stdin);
+    voter.name[strcspn(voter.name, "\n")] = '\0'; // remove newline if present
 
-    printf("enter voter's age: ");
-    scanf("%d", &voter.age);
-    if (voter.age <= 18)
+    char age_input[20];
+    int age;
+
+    do
     {
-        printf("The voter must have a minimum age of 18 to vote");
-        exit(1);
-    }
-    srand(time(NULL)); // srand seeds the random number with current time thus ensuring voter id no generated is always different
-    voter.voterid = generate_voterid();
-    printf("your voter id is: %d", voter.voterid);
-    printf("\n |-----Thank you for registering-----|");
-    fprintf(file, "%s,%d,%d\n", voter.name, voter.age, voter.voterid);
-    // wait(3);
+        printf("Enter voter's age: ");
+        fgets(age_input, sizeof(age_input), stdin);
+        if (sscanf(age_input, "%d", &age) == 1)
+        {
+            if (age <= 18)
+            {
+                printf("The voter must have a minimum age of 18 to vote\n");
+            }
+            else
+            {
+                break;
+            }
+        }
+        else
+        {
+            printf("Invalid input. Please enter a valid integer for age.\n");
+        }
+    } while (1);
+
+    srand(time(NULL));
+    generate_voterid(); // Just an example; replace with your generate_voterid() logic
+    printf("Your voter id is: %d\n", voter.voterid);
+    printf("|-----Thank you for registering-----|\n");
+
+    fprintf(file, "%s,%d,%d\n", voter.name, age, voter.voterid);
+
     char s[5];
-    printf("\ndo you want to continue?(yes/no) ");
-    scanf("%s", s);
+    printf("Do you want to continue? (yes/no) ");
+    fgets(s, sizeof(s), stdin);
+    s[strcspn(s, "\n")] = '\0'; // remove newline if present
+
     if (strcmp(s, "yes") == 0)
     {
         get_voter_info();
