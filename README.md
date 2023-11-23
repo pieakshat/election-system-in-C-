@@ -1,4 +1,4 @@
-# PSAP-course-project-
+# Election system 
  building an election system using file input-output. 
  all the data will be accessed from CSV files which can be edited by functions 
 
