@@ -1,0 +1,1 @@
+truct candidate_info candidate;
