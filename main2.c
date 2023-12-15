@@ -11,7 +11,7 @@ struct candidate_info // required candidate info
 {
     char name[30];
     int age;
-    int aadhar_no;
+    int candidate_no;
     int votes;
 };
 
@@ -37,20 +37,24 @@ void get_candidate_info() // function to get the candidate's info from the user
         exit(1);
     }
 
+    // do
+    // {
+    //     printf("Enter candidate name: ");
+    //     if (scanf("%29s", candidate.name) != 1)
+    //     {
+    //         printf("Invalid input. Please enter a valid candidate name.\n");
+    //         while (getchar() != '\n')
+    //             ; // clear the input buffer
+    //         continue;
+    //     }
+
+    //     // Clear the input buffer
+    //     while (getchar() != '\n')
+    //         ;
     do
     {
         printf("Enter candidate name: ");
-        if (scanf("%29s", candidate.name) != 1)
-        {
-            printf("Invalid input. Please enter a valid candidate name.\n");
-            while (getchar() != '\n')
-                ; // clear the input buffer
-            continue;
-        }
-
-        // Clear the input buffer
-        while (getchar() != '\n')
-            ;
+        fgets(candidate.name, sizeof(candidate.name), stdin);
 
         printf("Enter candidate age: ");
         if (scanf("%d", &candidate.age) != 1 || candidate.age <= 25)
@@ -61,10 +65,11 @@ void get_candidate_info() // function to get the candidate's info from the user
             continue;
         }
 
-        printf("Enter candidate's Aadhar number: ");
-        scanf("%d", &candidate.aadhar_no) != 1;
+        // printf("Enter candidate's Aadhar number: ");
+        // scanf("%d", &candidate.aadhar_no) != 1;
+         candidate.candidate_no=generate_voterid(); 
 
-        fprintf(file, "%s,%d,%d\n", candidate.name, candidate.age, candidate.aadhar_no);
+        fprintf(file, "%s,%d,%d\n", candidate.name, candidate.age, candidate.candidate_no);
         printf("\n|-----The candidate has been registered-----|\n");
 
         char s[10];

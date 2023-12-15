@@ -23,7 +23,7 @@ struct voter_info // required voter info
 void get_candidate_info() // function to get the candidate's info from the user
 {
     struct candidate_info candidate;
-    file = fopen("candidates.csv", "a");
+    file = fopen("candidates.csv", "a"); // create a csv file that stores all the candidates and their info
 
     if (file == NULL)
     {
@@ -47,7 +47,7 @@ void get_candidate_info() // function to get the candidate's info from the user
     printf("enter candidate's aadhar number: ");
     scanf("%d", &candidate.aadhar_no);
 
-    fprintf(file, "%s,%d,%d\n", candidate.name, candidate.age, candidate.aadhar_no);
+    fprintf(file, "\n%s,%d,%d,%d\n", candidate.name, candidate.age, candidate.aadhar_no, 0); // print the collected info in csv
     printf("\n|-----the candidate has been registered-----|");
 
     char s[10];
@@ -65,13 +65,13 @@ void get_candidate_info() // function to get the candidate's info from the user
     fclose(file);
 }
 
-int generate_voterid()
+int generate_voterid() // generate the voterid number for each voter
 {
     int a = rand();
     return a;
 }
 
-void get_voter_info()
+void get_voter_info() // function to register voters
 {
     struct voter_info voter;
     file = fopen("voter.csv", "a");
@@ -95,9 +95,10 @@ void get_voter_info()
     srand(time(NULL)); // srand seeds the random number with current time thus ensuring voter id no generated is always different
     voter.voterid = generate_voterid();
     printf("your voter id is: %d", voter.voterid);
+    // wait(2000);
     printf("\n |-----Thank you for registering-----|");
     fprintf(file, "%s,%d,%d\n", voter.name, voter.age, voter.voterid);
-    // wait(3);
+    // wait(2000);
     char s[5];
     printf("\ndo you want to continue?(yes/no) ");
     scanf("%s", s);
@@ -109,7 +110,7 @@ void get_voter_info()
     fclose(file);
 }
 
-void display_candidates()
+void display_candidates() // function to display all the candidates not in order
 {
     FILE *file;
     file = fopen("candidates.csv", "r");
@@ -121,7 +122,7 @@ void display_candidates()
     }
 
     printf("| %-20s |\n", "Candidates");
-    printf("|---------------------|\n");
+    printf("|----------------------|\n");
 
     char line[100];
     int count = 0;
@@ -130,7 +131,7 @@ void display_candidates()
         struct candidate_info candidate;
         sscanf(line, "%49[^,\n]", candidate.name);
         count++;
-        printf("| %d %-20s |\n", count, candidate.name);
+        printf("| %d %-18s |\n", count, candidate.name);
     }
 }
 
@@ -185,12 +186,12 @@ void vote()
         char line[100];
         while (fgets(line, sizeof(line), candidatesFile))
         {
-            sscanf(line, "%29[^,],%d,%d", candidate.name, &candidate.age, &candidate.aadhar_no);
+            sscanf(line, "%29[^,],%d,%d,%d", candidate.name, &candidate.age, &candidate.aadhar_no, &candidate.votes);
 
             if (strcmp(selected_candidate, candidate.name) == 0)
             {
                 flag = 1;                                            // to check if the cndidate name is correct in the terminal
-                sscanf(line, "%*[^,],%*d,%*d,%d", &candidate.votes); //%*d reads the int but doesn't assign it to any variable thus essentially skipping over it
+                sscanf(line, "%*[^,],%*d,%*d,%d", &candidate.votes); //%*d reads the int but doesn't assign it to any variable, essentially skipping over it
                 candidate.votes++;                                   // Increment the vote count for the selected candidate
                 fprintf(tempFile, "%s,%d,%d,%d\n", candidate.name, candidate.age, candidate.aadhar_no, candidate.votes);
             }
@@ -202,8 +203,9 @@ void vote()
         }
         if (flag == 0)
         {
-            printf("candidate not found");
-            exit(1);
+            printf("candidate not found\n");
+            remove("temp.csv");
+            vote(); // /////
         }
         else
         {
